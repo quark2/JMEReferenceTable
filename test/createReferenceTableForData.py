@@ -12,20 +12,20 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
-process.GlobalTag.globaltag = '76X_mcRun2_asymptotic_RunIIFall15DR76_v1'
+process.GlobalTag.globaltag = '76X_dataRun2_16Dec2015_v0'
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
 process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
-            '/store/mc/RunIIFall15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext3-v1/00000/02837459-03C2-E511-8EA2-002590A887AC.root'
+            '/store/data/Run2015D/DoubleMuon/MINIAOD/16Dec2015-v1/10000/000913F7-E9A7-E511-A286-003048FFD79C.root'
             )
         )
 
 process.out = cms.OutputModule("PoolOutputModule",
         outputCommands = cms.untracked.vstring('keep *'),
-        fileName = cms.untracked.string("output.root")
+        fileName = cms.untracked.string("jme_reference_sample_data.root")
         )
 
 # Jets
@@ -37,7 +37,7 @@ from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
 
 process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
         src = cms.InputTag("slimmedJets"),
-        levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
+        levels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
         payload = 'AK4PFchs'
         )
 
@@ -53,20 +53,14 @@ process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
         src = cms.InputTag('slimmedJetsNewJEC'),
         enabled = cms.bool(True),
         rho = cms.InputTag("fixedGridRhoAll"),
-        resolutionFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_MC_PtResolution_AK4PFchs.txt'),
-        scaleFactorFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_MC_SF_AK4PFchs.txt'),
+        resolutionFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_DATA_PtResolution_AK4PFchs.txt'),
+        scaleFactorFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_DATA_SF_AK4PFchs.txt'),
 
         genJets = cms.InputTag('slimmedGenJets'),
         dRMax = cms.double(0.2),
         dPtMaxFactor = cms.double(3),
         )
 
-
-# MET
-
-process.genMet = cms.EDProducer("GenMETExtractor",
-        metSource = cms.InputTag("slimmedMETs", "", "@skipCurrentProcess")
-        )
 
 # Raw MET
 process.uncorrectedMet = cms.EDProducer("RecoMETExtractor",
@@ -77,11 +71,11 @@ process.uncorrectedMet = cms.EDProducer("RecoMETExtractor",
 # Raw PAT MET
 from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
 addMETCollection(process, labelName="uncorrectedPatMet", metSource="uncorrectedMet")
-process.uncorrectedPatMet.genMETSource = cms.InputTag('genMet')
+process.uncorrectedPatMet.addGenMET = False
 
 # Type-1 correction
 process.Type1CorrForNewJEC = cms.EDProducer("PATPFJetMETcorrInputProducer",
-        isMC = cms.bool(True),
+        isMC = cms.bool(False),
         jetCorrLabel = cms.InputTag("L3Absolute"),
         jetCorrLabelRes = cms.InputTag("L2L3Residual"),
         offsetCorrLabel = cms.InputTag("L1FastJet"),
