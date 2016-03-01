@@ -12,20 +12,20 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
-process.GlobalTag.globaltag = '76X_dataRun2_16Dec2015_v0'
+process.GlobalTag.globaltag = '74X_dataRun2_reMiniAOD_v2'
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
 process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
-            '/store/data/Run2015D/DoubleMuon/MINIAOD/16Dec2015-v1/10000/000913F7-E9A7-E511-A286-003048FFD79C.root'
+            '/store/data/Run2015D/DoubleMuon/MINIAOD/05Oct2015-v1/30000/0C5F6C03-886F-E511-B4AD-0025905A608E.root'
             )
         )
 
 process.out = cms.OutputModule("PoolOutputModule",
         outputCommands = cms.untracked.vstring('keep *'),
-        fileName = cms.untracked.string("jme_reference_sample_data.root")
+        fileName = cms.untracked.string("jme_reference_sample_data_74x.root")
         )
 
 # Jets
@@ -51,7 +51,7 @@ process.slimmedJetsNewJEC = patJetsUpdated.clone(
 
 process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
         src = cms.InputTag('slimmedJetsNewJEC'),
-        enabled = cms.bool(True),
+        enabled = cms.bool(False),
         rho = cms.InputTag("fixedGridRhoAll"),
         resolutionFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_DATA_PtResolution_AK4PFchs.txt'),
         scaleFactorFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_DATA_SF_AK4PFchs.txt'),
