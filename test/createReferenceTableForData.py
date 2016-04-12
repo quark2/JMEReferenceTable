@@ -52,7 +52,7 @@ process.slimmedJetsNewJEC = patJetsUpdated.clone(
 process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
         src = cms.InputTag('slimmedJetsNewJEC'),
         enabled = cms.bool(True),
-        rho = cms.InputTag("fixedGridRhoAll"),
+        rho = cms.InputTag("fixedGridRhoFastjetAll"),
         resolutionFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_DATA_PtResolution_AK4PFchs.txt'),
         scaleFactorFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_DATA_SF_AK4PFchs.txt'),
 
