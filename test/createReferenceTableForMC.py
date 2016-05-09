@@ -53,12 +53,14 @@ process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
         src = cms.InputTag('slimmedJetsNewJEC'),
         enabled = cms.bool(True),
         rho = cms.InputTag("fixedGridRhoFastjetAll"),
-        resolutionFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_MC_PtResolution_AK4PFchs.txt'),
-        scaleFactorFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Summer15_25nsV6_MC_SF_AK4PFchs.txt'),
+        resolutionFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Fall15_25nsV2_MC_PtResolution_AK4PFchs.txt'),
+        scaleFactorFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Fall15_25nsV2_MC_SF_AK4PFchs.txt'),
 
         genJets = cms.InputTag('slimmedGenJets'),
         dRMax = cms.double(0.2),
         dPtMaxFactor = cms.double(3),
+
+        debug = cms.untracked.bool(False)
         )
 
 
