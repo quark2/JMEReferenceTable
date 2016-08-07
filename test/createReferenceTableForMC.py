@@ -12,36 +12,36 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
-process.GlobalTag.globaltag = '76X_mcRun2_asymptotic_RunIIFall15DR76_v1'
+process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2_v1'
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
 process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
-            '/store/mc/RunIIFall15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext3-v1/00000/02837459-03C2-E511-8EA2-002590A887AC.root'
+            '/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v2/70000/041A166C-B53F-E611-BF34-5CB90179CCC0.root'
             )
         )
 
 process.out = cms.OutputModule("PoolOutputModule",
         outputCommands = cms.untracked.vstring('keep *'),
-        fileName = cms.untracked.string("jme_reference_sample_mc.root")
+        fileName = cms.untracked.string("jme_reference_sample_mc_80x.root")
         )
 
 # Jets
 
 ### First, apply new JEC over slimmedJets
 
-from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJetCorrFactors
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJets
 
-process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
+process.patJetCorrFactorsReapplyJEC = updatedPatJetCorrFactors.clone(
         src = cms.InputTag("slimmedJets"),
         levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
         payload = 'AK4PFchs'
         )
 
-process.slimmedJetsNewJEC = patJetsUpdated.clone(
+process.slimmedJetsNewJEC = updatedPatJets.clone(
         jetSource = cms.InputTag("slimmedJets"),
         jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
         )
@@ -53,8 +53,8 @@ process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
         src = cms.InputTag('slimmedJetsNewJEC'),
         enabled = cms.bool(True),
         rho = cms.InputTag("fixedGridRhoFastjetAll"),
-        resolutionFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Fall15_25nsV2_MC_PtResolution_AK4PFchs.txt'),
-        scaleFactorFile = cms.FileInPath('JetMETCorrections/JMEReferenceTable/data/Fall15_25nsV2_MC_SF_AK4PFchs.txt'),
+        algo = cms.string('AK4PFchs'),
+        algopt = cms.string('AK4PFchs_pt'),
 
         genJets = cms.InputTag('slimmedGenJets'),
         dRMax = cms.double(0.2),
@@ -83,7 +83,7 @@ process.uncorrectedPatMet.genMETSource = cms.InputTag('genMet')
 
 # Type-1 correction
 process.Type1CorrForNewJEC = cms.EDProducer("PATPFJetMETcorrInputProducer",
-        isMC = cms.bool(True),
+        src = cms.InputTag("slimmedJetsNewJEC"),
         jetCorrLabel = cms.InputTag("L3Absolute"),
         jetCorrLabelRes = cms.InputTag("L2L3Residual"),
         offsetCorrLabel = cms.InputTag("L1FastJet"),
@@ -91,12 +91,7 @@ process.Type1CorrForNewJEC = cms.EDProducer("PATPFJetMETcorrInputProducer",
         skipEMfractionThreshold = cms.double(0.9),
         skipMuonSelection = cms.string('isGlobalMuon | isStandAloneMuon'),
         skipMuons = cms.bool(True),
-        src = cms.InputTag("slimmedJetsNewJEC"),
-        type1JetPtThreshold = cms.double(15.0),
-        type2ExtraCorrFactor = cms.double(1.0),
-        type2ResidualCorrEtaMax = cms.double(9.9),
-        type2ResidualCorrLabel = cms.InputTag(""),
-        type2ResidualCorrOffset = cms.double(0.0)
+        type1JetPtThreshold = cms.double(15.0)
         )
 
 process.slimmedMETsNewJEC = cms.EDProducer('CorrectedPATMETProducer',
