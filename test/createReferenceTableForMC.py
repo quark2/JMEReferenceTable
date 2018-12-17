@@ -19,8 +19,7 @@ jecFile = 'Summer16_07Aug2017_V10_MC'
 from CondCore.CondDB.CondDB_cfi import CondDB
 if hasattr(CondDB, 'connect'): delattr(CondDB, 'connect')
 process.jec = cms.ESSource("PoolDBESSource",CondDB,
-    #connect = cms.string('sqlite_fip:nano/nanoAOD/data/jec/%s.db'%jecFile),            
-    connect = cms.string('sqlite_fip:JetMETCorrections/JMEReferenceTable/data/%s.db'%jecFile),            
+    connect = cms.string('sqlite_fip:nano/nanoAOD/data/jec/%s.db'%jecFile),            
     toGet = cms.VPSet(
         cms.PSet(
             record = cms.string("JetCorrectionsRecord"),
@@ -82,8 +81,8 @@ process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
         rho = cms.InputTag("fixedGridRhoFastjetAll"),
         #algo = cms.string('AK4PFchs'),
         #algopt = cms.string('AK4PFchs_pt'),
-        resolutionFile = cms.FileInPath("JetMETCorrections/JMEReferenceTable/data/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"), 
-        scaleFactorFile = cms.FileInPath("JetMETCorrections/JMEReferenceTable/data/Summer16_25nsV1_MC_SF_AK4PFchs.txt"), 
+        resolutionFile = cms.FileInPath("nano/nanoAOD/data/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"), 
+        scaleFactorFile = cms.FileInPath("nano/nanoAOD/data/Summer16_25nsV1_MC_SF_AK4PFchs.txt"), 
 
         genJets = cms.InputTag('slimmedGenJets'),
         dRMax = cms.double(0.2),
