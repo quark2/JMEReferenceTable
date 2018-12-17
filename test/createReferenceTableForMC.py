@@ -14,12 +14,39 @@ process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
 process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2_v1'
 
+# JEC
+jecFile = 'Summer16_07Aug2017_V10_MC'
+from CondCore.CondDB.CondDB_cfi import CondDB
+if hasattr(CondDB, 'connect'): delattr(CondDB, 'connect')
+process.jec = cms.ESSource("PoolDBESSource",CondDB,
+    #connect = cms.string('sqlite_fip:nano/nanoAOD/data/jec/%s.db'%jecFile),            
+    connect = cms.string('sqlite_fip:JetMETCorrections/JMEReferenceTable/data/%s.db'%jecFile),            
+    toGet = cms.VPSet(
+        cms.PSet(
+            record = cms.string("JetCorrectionsRecord"),
+            tag = cms.string("JetCorrectorParametersCollection_%s_AK4PF"%jecFile),
+            label= cms.untracked.string("AK4PF")),
+        cms.PSet(
+            record = cms.string("JetCorrectionsRecord"),
+            tag = cms.string("JetCorrectorParametersCollection_%s_AK4PFchs"%jecFile),
+            label= cms.untracked.string("AK4PFchs")),
+        cms.PSet(
+            record = cms.string("JetCorrectionsRecord"),
+            tag = cms.string("JetCorrectorParametersCollection_%s_AK4PFPuppi"%jecFile),
+            label= cms.untracked.string("AK4PFPuppi")),
+        )
+    )
+process.es_prefer_jec = cms.ESPrefer("PoolDBESSource","jec")
+print "JEC based on", process.jec.connect
+
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
+#process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
-            '/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v2/70000/041A166C-B53F-E611-BF34-5CB90179CCC0.root'
+            #'/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v2/70000/041A166C-B53F-E611-BF34-5CB90179CCC0.root'
+            'file:/xrootd/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0806AB92-99BE-E611-9ECD-0025905A6138.root'
             )
         )
 
@@ -53,8 +80,10 @@ process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
         src = cms.InputTag('slimmedJetsNewJEC'),
         enabled = cms.bool(True),
         rho = cms.InputTag("fixedGridRhoFastjetAll"),
-        algo = cms.string('AK4PFchs'),
-        algopt = cms.string('AK4PFchs_pt'),
+        #algo = cms.string('AK4PFchs'),
+        #algopt = cms.string('AK4PFchs_pt'),
+        resolutionFile = cms.FileInPath("JetMETCorrections/JMEReferenceTable/data/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt"), 
+        scaleFactorFile = cms.FileInPath("JetMETCorrections/JMEReferenceTable/data/Summer16_25nsV1_MC_SF_AK4PFchs.txt"), 
 
         genJets = cms.InputTag('slimmedGenJets'),
         dRMax = cms.double(0.2),
@@ -119,5 +148,6 @@ process.produceTable = cms.EDAnalyzer('JMEReferenceTableAnalyzer',
         smeared_met = cms.InputTag('slimmedMETsSmeared')
         )
 
-process.p = cms.Path(process.produceTable)
+#process.p = cms.Path(process.patJetCorrFactorsReapplyJEC+process.slimmedJetsNewJEC+process.slimmedJetsSmeared+process.produceTable)
+process.p = cms.Path(process.patJetCorrFactorsReapplyJEC+process.slimmedJetsNewJEC+process.slimmedJetsSmeared)
 process.end = cms.EndPath(process.out)
