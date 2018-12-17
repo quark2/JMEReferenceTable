@@ -42,7 +42,7 @@ print "JEC based on", process.jec.connect
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 #process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(500))
 process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
             #'/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v2/70000/041A166C-B53F-E611-BF34-5CB90179CCC0.root'
