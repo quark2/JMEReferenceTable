@@ -12,7 +12,7 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
-process.GlobalTag.globaltag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
+process.GlobalTag.globaltag = '94X_dataRun2_v10'
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 

@@ -12,10 +12,10 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
-process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2_v1'
+process.GlobalTag.globaltag = '94X_mcRun2_asymptotic_v3'
 
 # JEC
-jecFile = 'Summer16_07Aug2017_V10_MC'
+jecFile = 'Summer16_07Aug2017_V11_MC'
 from CondCore.CondDB.CondDB_cfi import CondDB
 if hasattr(CondDB, 'connect'): delattr(CondDB, 'connect')
 process.jec = cms.ESSource("PoolDBESSource",CondDB,
